@@ -4,9 +4,10 @@ from scipy import integrate
 
 
 class ODEPlot:
-    def __init__(self, function_1, function_2, xAsix, yAxis):
+    def __init__(self, function_1, function_2, xAsix, yAxis, tRange=(-50, 50)):
         self.function_1 = function_1
         self.function_2 = function_2
+        self.tStart, self.tEnd = tRange
         self.function = lambda x, y, t=0: (self.function_1(x, y), self.function_2(x, y))
         self.xStart, self.xEnd = xAsix
         self.yStart, self.yEnd = yAxis
@@ -44,10 +45,20 @@ class ODEPlot:
             x, y, color = point
             plt.plot(x, y, 'o', color=color)
 
-        t = np.linspace(0, 10, 1000)
+        t = np.linspace(self.tStart, self.tEnd, 1000)
         for start in self.startConditions:
             x, y, color = start
-            output = integrate.odeint(lambda p, t: self.function(p[0], p[1], t), [x, y], t)
+
+            """
+            step 1 Filter out all negative values
+            """
+            tNegative = np.flip(t[t < 0])
+            tPositve = t[t >= 0]
+
+            output = integrate.odeint(lambda p, t: self.function(p[0], p[1], t), [x, y], tPositve)
+            plt.plot(output[:, 0], output[:, 1], color=color)
+
+            output = integrate.odeint(lambda p, t: self.function(p[0], p[1], t), [x, y], tNegative)
             plt.plot(output[:, 0], output[:, 1], color=color)
 
         ax = plt.gca()
@@ -71,15 +82,12 @@ class ODEPlot:
         plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(func))
 
         plt.savefig(filename, dpi=400)
-        plt.show()
 
 
 def run():
-    ode = ODEPlot(lambda x, y: y, lambda x, y: -x, (-10, 10), (-10, 10))
+    ode = ODEPlot(lambda x, y: -x + y, lambda x, y: -y, (-10, 10), (-10, 10))
     ode.addPoint(0, 0, 'black')
-    ode.addInitalStartConditons(2, 0, 'black')
-    ode.addInitalStartConditons(8, 0, 'red')
-    ode.addCircle(8, 0, 5, 'red')
+    ode.addInitalStartConditons(2, 2, 'black')
     ode.save('test.png')
 
 
