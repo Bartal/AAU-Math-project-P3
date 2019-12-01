@@ -4,11 +4,11 @@ from scipy import integrate
 
 
 class ODEPlot:
-    def __init__(self, function_1, function_2, xAsix, yAxis, tRange=(-50, 50)):
+    def __init__(self, function_1, function_2, xAsix, yAxis, tRange=(-20, 20)):
         self.function_1 = function_1
         self.function_2 = function_2
         self.tStart, self.tEnd = tRange
-        self.function = lambda x, y, t=0: (self.function_1(x, y), self.function_2(x, y))
+        self.function = lambda x, y, t=0: [self.function_1(x, y), self.function_2(x, y)]
         self.xStart, self.xEnd = xAsix
         self.yStart, self.yEnd = yAxis
         self.points = []
@@ -45,21 +45,23 @@ class ODEPlot:
             x, y, color = point
             plt.plot(x, y, 'o', color=color)
 
-        t = np.linspace(self.tStart, self.tEnd, 1000)
+        N = 500
+        t = np.linspace(self.tStart, self.tEnd, N)
         for start in self.startConditions:
             x, y, color = start
 
-            """
-            step 1 Filter out all negative values
-            """
-            tNegative = np.flip(t[t < 0])
+            tNegative = t[t < 0]
             tPositve = t[t >= 0]
 
-            output = integrate.odeint(lambda p, t: self.function(p[0], p[1], t), [x, y], tPositve)
-            plt.plot(output[:, 0], output[:, 1], color=color)
+            def fun(p, t):
+                return self.function(p[0], p[1], t)
 
-            output = integrate.odeint(lambda p, t: self.function(p[0], p[1], t), [x, y], tNegative)
-            plt.plot(output[:, 0], output[:, 1], color=color)
+            if len(tNegative) > 0:
+                output = integrate.odeint(fun, [x, y], tNegative)
+                plt.plot(output[:, 0], output[:, 1], color=color)
+            if len(tPositve) > 0:
+                output = integrate.odeint(fun, [x, y], tPositve)
+                plt.plot(output[:, 0], output[:, 1], color=color)
 
         ax = plt.gca()
         for circle in self.artist:
