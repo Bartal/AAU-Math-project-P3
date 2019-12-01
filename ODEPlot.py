@@ -15,14 +15,14 @@ class ODEPlot:
         self.startConditions = []
         self.artist = []
 
-    def addPoint(self, x, y, color):
-        self.points.append((x, y, color))
+    def addPoint(self, x, y, color, label=None):
+        self.points.append((x, y, color, label))
 
-    def addInitalStartConditons(self, x, y, color):
-        self.startConditions.append((x, y, color))
+    def addInitalStartConditons(self, x, y, color, legend=True):
+        self.startConditions.append((x, y, color, legend))
 
-    def addCircle(self, x, y, radius, color='black', lineType='--'):
-        self.artist.append(plt.Circle((x, y), radius, color=color, fill=False, linestyle=lineType))
+    def addCircle(self, x, y, radius, color='black', lineType='--', label=None):
+        self.artist.append(plt.Circle((x, y), radius, color=color, fill=False, linestyle=lineType, label=label))
 
     def save(self, filename):
         # plt.style.use('ggplot')
@@ -42,26 +42,30 @@ class ODEPlot:
         plt.quiver(x, y, dx1, dx2, M)
 
         for point in self.points:
-            x, y, color = point
-            plt.plot(x, y, 'o', color=color)
+            x, y, color, label = point
+            plt.plot(x, y, 'o', color=color, label=label)
 
         N = 500
         t = np.linspace(self.tStart, self.tEnd, N)
         for start in self.startConditions:
-            x, y, color = start
+            x, y, color, legend = start
 
-            tNegative = t[t < 0]
+            tNegative = np.flip(t[t < 0])
             tPositve = t[t >= 0]
 
             def fun(p, t):
                 return self.function(p[0], p[1], t)
 
+            legendEntry = None
+            if legend:
+                legendEntry = "x₁, x₂ = {0}, {0}".format(x, y)
             if len(tNegative) > 0:
                 output = integrate.odeint(fun, [x, y], tNegative)
                 plt.plot(output[:, 0], output[:, 1], color=color)
+
             if len(tPositve) > 0:
                 output = integrate.odeint(fun, [x, y], tPositve)
-                plt.plot(output[:, 0], output[:, 1], color=color)
+                plt.plot(output[:, 0], output[:, 1], color=color, label=legendEntry)
 
         ax = plt.gca()
         for circle in self.artist:
@@ -82,7 +86,8 @@ class ODEPlot:
         func = lambda x, pos: "" if np.isclose(x, 0) else x
         plt.gca().xaxis.set_major_formatter(ticker.FuncFormatter(func))
         plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(func))
-
+        plt.legend(loc="lower center", bbox_to_anchor=(0.5, -0.1), ncol=6, fancybox=True, prop={'size': 5},
+                   markerscale=0.5)
         plt.savefig(filename, dpi=400)
 
 
