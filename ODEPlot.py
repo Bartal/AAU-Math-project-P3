@@ -83,8 +83,7 @@ class ODEPlot:
         ax.tick_params(axis='both', which='major', labelsize=8)
         ax.tick_params(axis='both', which='minor', labelsize=6)
 
-        ax.xaxis.set_label_coords(1.02, 0.5)
-        ax.yaxis.set_label_coords(0.5, 1.02)
+
 
         func = lambda x, pos: "" if np.isclose(x, 0) else x
         plt.gca().xaxis.set_major_formatter(ticker.FuncFormatter(func))
@@ -92,15 +91,17 @@ class ODEPlot:
 
         current_handles, current_labels = plt.gca().get_legend_handles_labels()
         if len(current_labels) > 0:
-            plt.legend(loc="lower center", bbox_to_anchor=(0.5, -0.1), ncol=3, fancybox=True, prop={'size': 10},
+            plt.legend(loc="lower center", bbox_to_anchor=(0.5, -0.15), ncol=3, fancybox=True, prop={'size': 10},
                        markerscale=0.5)
 
         for point in self.points:
             x, y, color, label = point
             plt.plot(x, y, 'o', color=color, label=label)
 
-        plt.xlabel('x₁', fontsize=9)
-        plt.ylabel('x₂', fontsize=9, rotation='horizontal')
+        ax.xaxis.set_label_coords(1.05, 0.5)
+        ax.yaxis.set_label_coords(0.5, 1.02)
+        plt.xlabel('x₁', fontsize=11)
+        plt.ylabel('x₂', fontsize=11, rotation='horizontal')
         plt.savefig(filename, dpi=100, bbox_inches='tight')
 
 

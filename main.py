@@ -80,3 +80,6 @@ Plot10.addInitalStartConditons(-0.9, -5, 'black')
 Plot10.addInitalStartConditons(-1.05, -5, 'black')
 Plot10.addInitalStartConditons(-1.2, -5, 'black')
 Plot10.save('Chapter_5_graph_11.png')
+
+Plot10 = ODEPlot(lambda x, y: x + y, lambda x, y: x + y, (-5, 5), (-5, 5))
+Plot10.save('Chapter_5_graph_12.png')
