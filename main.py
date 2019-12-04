@@ -1,4 +1,5 @@
 from ODEPlot import ODEPlot
+import numpy as np
 
 Plot1 = ODEPlot(lambda x, y: y, lambda x, y: -x, (-10, 10), (-10, 10))
 Plot1.save('Chapter_5_graph_1.png')
@@ -72,14 +73,39 @@ Plot9.save('Chapter_5_graph_9.png')
 
 Plot10 = ODEPlot(lambda x, y: 2 * x - y, lambda x, y: x - 3 * y, (-5, 5), (-5, 5), (-10.8, 10.8))
 Plot10.addPoint(0, 0, 'cyan')
-Plot10.addInitalStartConditons(0.9, 5, 'black')
-Plot10.addInitalStartConditons(1.05, 5, 'black')
-Plot10.addInitalStartConditons(1.2, 5, 'black')
+Plot10.addInitalStartConditons(0.7, 5, 'black')
+Plot10.addInitalStartConditons(0.00001, 0.00001, 'black')
+Plot10.addInitalStartConditons(1.4, 5, 'black')
 
-Plot10.addInitalStartConditons(-0.9, -5, 'black')
-Plot10.addInitalStartConditons(-1.05, -5, 'black')
-Plot10.addInitalStartConditons(-1.2, -5, 'black')
+Plot10.addInitalStartConditons(-0.7, -5, 'black')
+Plot10.addInitalStartConditons(-0.00001, -0.00001, 'black')
+Plot10.addInitalStartConditons(-1.4, -5, 'black')
 Plot10.save('Chapter_5_graph_11.png')
 
-Plot10 = ODEPlot(lambda x, y: x + y, lambda x, y: x + y, (-5, 5), (-5, 5))
-Plot10.save('Chapter_5_graph_12.png')
+Plot11 = ODEPlot(lambda x, y: x - y - x ** 2 + x * y, lambda x, y: -y - x ** 2, (-3, 3), (-3, 3))
+Plot11.addPoint(0, 0)
+Plot11.addPoint(1, -1)
+Plot11.addPoint(-1, -1)
+Plot11.save('Chapter_5_graph_12.png', numberOfArrows=(20, 20))
+
+axisRange = (-3, 3)
+Plot12 = ODEPlot(lambda x, y: x * (2 - 4 * y + x), lambda x, y: y * (1 - 2 * x - 2 * y), axisRange, axisRange)
+Plot12.addPoint(0, 0)
+Plot12.addPoint(0, 0.5)
+Plot12.addPoint(-2, 0)
+Plot12.save('Chapter_5_graph_13.png', numberOfArrows=(20, 20))
+
+Plot13 = ODEPlot(lambda x, y: 2 * x - 2 * y, lambda x, y: -2 * x + 1 * y, axisRange, axisRange)
+Plot13.addPoint(0, 0)
+Plot13.save('Chapter_5_graph_14.png', numberOfArrows=(20, 20))
+
+Plot14 = ODEPlot(lambda x, y: -4 * y, lambda x, y: -2 * x - 1 * y, axisRange, axisRange)
+Plot14.addPoint(0, 0)
+Plot14.save('Chapter_5_graph_15.png', numberOfArrows=(20, 20))
+
+Plot15 = ODEPlot(lambda x, y: -2 * x - 4 * y, lambda x, y: -2 * x - 3 * y, axisRange, axisRange)
+Plot15.addPoint(0, 0)
+N = 10
+Plot15.addInitalStartConditons(0.5/N, -0.25/N, 'black')
+Plot15.addInitalStartConditons(-0.5/N, 0.25/N, 'black')
+Plot15.save('Chapter_5_graph_16.png', numberOfArrows=(20, 20))

@@ -15,7 +15,7 @@ class ODEPlot:
         self.startConditions = []
         self.artist = []
 
-    def addPoint(self, x, y, color, label=None):
+    def addPoint(self, x, y, color='cyan', label=None):
         self.points.append((x, y, color, label))
 
     def addInitalStartConditons(self, x, y, color, customTrange=None, legend=False):
@@ -24,12 +24,12 @@ class ODEPlot:
     def addCircle(self, x, y, radius, color='black', lineType='--', label=None):
         self.artist.append(plt.Circle((x, y), radius, color=color, fill=False, linestyle=lineType, label=label))
 
-    def save(self, filename):
+    def save(self, filename, numberOfArrows=(15,15)):
         # plt.style.use('ggplot')
         np.seterr(divide='ignore', invalid='ignore')
 
-        x = np.linspace(self.xStart, self.xEnd, 15)
-        y = np.linspace(self.yStart, self.yEnd, 15)
+        x = np.linspace(self.xStart, self.xEnd, numberOfArrows[0])
+        y = np.linspace(self.yStart, self.yEnd, numberOfArrows[1])
         X1, Y1 = np.meshgrid(x, y)
         dx1, dx2 = self.function(X1, Y1)
 
